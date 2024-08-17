@@ -4,6 +4,9 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: allow-prometheus-ingress
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "pihole-exporter.labels" . | indent 4 }}
 spec:
   ingress:
     - ports:

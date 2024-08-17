@@ -37,7 +37,8 @@ ingress:
 # Endpoint configuration for your piHole instance
 piHole:
   hostname: service-name.namespace.svc.cluster.local #InsertYourValueHere
-  port: 80 #Change the port the exporter tries to access your Pihole Service on
+  # The port the exporter tries to access your Pihole Service on
+  port: 80
 
 extraEnvVars:
   INTERVAL: 10s,

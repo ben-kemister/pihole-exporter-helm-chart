@@ -6,10 +6,12 @@ kind: NetworkPolicy
 metadata:
   name: allow-pi-hole-exporter-ingress
   namespace: {{ .Values.networkPolicies.piHolePolicy.namespace | default .Release.Namespace }}
+  labels:
+{{ include "pihole-exporter.labels" . | indent 4 }}
 spec:
   ingress:
     - ports:
-        - port: {{ .Values.networkPolicies.piHolePolicy.port }}
+        - port: {{ .Values.piHole.port }}
           protocol: TCP
     - from:
         - podSelector:
