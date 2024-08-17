@@ -15,28 +15,32 @@ fullnameOverride: ""
 
 service:
   type: ClusterIP
-  port: 9617 #DefaultImagePort-CanBeChangedBelow
+  # The piHole Exporter port.
+  # Changing the value here will also set the 'PORT' environmental variable for the container
+  port: 9617
   portName: exporter-port
 
 ingress:
   enabled: false
   annotations: {}
     # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+  # kubernetes.io/tls-acme: "true"
   hosts:
-#    - host: pihole-host.local
-#      paths: {}
+  #    - host: pihole-host.local
+  #      paths: {}
 
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
 
+# Endpoint configuration for your piHole instance
+piHole:
+  hostname: service-name.namespace.svc.cluster.local #InsertYourValueHere
+  port: 80 #Change the port the exporter tries to access your Pihole Service on
+
 extraEnvVars:
   INTERVAL: 10s,
-  PIHOLE_HOSTNAME: service-name.namespace.svc.cluster.local #InsertYourValueHere
-#  PIHOLE_PORT: 8080 #Change the port the exporter tries to access your Pihole Service on
-#  PORT: 8080 #ChangeDefaultWebserverPort
 
 secret:
   # false - generate a new secret using the value(s) from 'secretEnvVars'
@@ -44,8 +48,8 @@ secret:
   generate: true
   # Used when generating a new secret from either the given pi-hole API token OR password
   secretEnvVars:
-#   PIHOLE_API_TOKEN: <YOUR_PI_HOLE_API_TOKEN>
-#   PIHOLE_PASSWORD: <YOUR_PI_HOLE_PASSWORD>
+  #   PIHOLE_API_TOKEN: <YOUR_PI_HOLE_API_TOKEN>
+  #   PIHOLE_PASSWORD: <YOUR_PI_HOLE_PASSWORD>
 
   # Details of an existing secret within the same namespace containing the pi-hole API token OR password
   existing:
@@ -67,6 +71,25 @@ serviceMonitor:
   relabelings: ""
   metricRelabelings: ""
 
+networkPolicies:
+  # true - deploy network polies
+  enabled: false
+  piHolePolicy:
+    # The namespace of your pihole instance if running in a different namespace to the pi-hole-exporter
+    namespace: ""
+    # The labels used to target your piHole instance
+    matchLabels: {
+      # For example: this label is applied to the pihole pod when using the 'mojo2600/pihole' helm chart
+      app: pihole
+    }
+
+  piHoleExporterPolicy:
+    # The labels used to allow access by your Prometheus instance
+    matchLabels: {
+      # For example: this label is applied to the prometheus pod when deployed using the 'kube-prometheus-stack' helm chart
+      app.kubernetes.io/name: prometheus
+    }
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -77,7 +100,7 @@ resources: {}
   #   memory: 128Mi
   # requests:
   #   cpu: 100m
-  #   memory: 128Mi
+#   memory: 128Mi
 
 nodeSelector: {}
 

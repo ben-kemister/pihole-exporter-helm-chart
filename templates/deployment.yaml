@@ -30,6 +30,12 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+          - name: PIHOLE_HOSTNAME
+            value: {{ .Values.piHole.hostname }}
+          - name: PIHOLE_PORT
+            value: {{ .Values.piHole.port }}
+          - name: PORT
+            value: {{ .Values.service.port }}
           {{- range $key, $value := .Values.extraEnvVars }}
           - name: {{ $key | quote }}
             value: {{ $value | quote }}
@@ -50,7 +56,7 @@ spec:
           {{- end }}
           {{- end }}
           ports:
-          - name: httpexporter
+          - name: {{ .Values.service.portName }}
             containerPort: {{ .Values.service.port }}
             protocol: TCP
           livenessProbe:
