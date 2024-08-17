@@ -56,9 +56,9 @@ secret:
     # The key within the secret containing the piHole api token or password
     secretKey: PIHOLE_API_TOKEN
 
-
+# Configuration for the deployment of a 'ServiceMonitor' resource for autoconfiguration
 serviceMonitor:
-  # True - deploy a 'ServiceMonitor' resource, requires the kube-prometheus CRDs to be deployed beforehand
+  # true - deploy a 'ServiceMonitor' resource, requires the kube-prometheus CRDs to be deployed beforehand
   enabled: false
   namespace: ""
   interval: "60s"

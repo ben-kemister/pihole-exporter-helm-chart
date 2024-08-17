@@ -69,3 +69,5 @@ To override the default you can either :
 | secret.existing.secretName           | The name of an existing secret containing the Pihole credentials                            | my-pi-hole-secret |
 | secret.existing.piHoleCredentialType | The type of piHole credential in the secret, either 'PIHOLE_API_TOKEN' or 'PIHOLE_PASSWORD' |  PIHOLE_API_TOKEN |
 | secret.existing.secretKey            | The key within the secret containing the piHole api token or password                       |  PIHOLE_API_TOKEN |
+| serviceMonitor.enable                | Deploys a (Prometheus) ServiceMonitor resource for scraping autoconfiguration               |             false |
+
