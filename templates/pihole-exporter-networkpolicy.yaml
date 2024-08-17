@@ -1,0 +1,24 @@
+{{- if .Values.networkPolicies.enabled }}
+# Allow prometheus to use the pi-hole-exporter /metrics endpoint
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-pi-hole-exporter-ingress
+spec:
+  ingress:
+    - ports:
+        - port: {{ .Values.service.port }}
+          protocol: TCP
+    - from:
+        - podSelector:
+            matchLabels:
+              {{- with .Values.networkPolicies.piHoleExporterPolicy.matchLabels }}
+              {{- toYaml . | nindent 14 }}
+              {{- end }}
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "pihole-exporter.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  policyTypes:
+    - Ingress
+{{- end }}

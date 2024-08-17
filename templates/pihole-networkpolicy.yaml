@@ -1,0 +1,26 @@
+{{- if .Values.networkPolicies.enabled }}
+---
+# Allow external-dns to use the pi-hole web interface
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-pi-hole-exporter-ingress
+  namespace: {{ .Values.networkPolicies.piHolePolicy.namespace | default .Release.Namespace }}
+spec:
+  ingress:
+    - ports:
+        - port: {{ .Values.networkPolicies.piHolePolicy.port }}
+          protocol: TCP
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: {{ include "pihole-exporter.name" . }}
+              app.kubernetes.io/instance: {{ .Release.Name }}
+  podSelector:
+    matchLabels:
+    {{- with .Values.networkPolicies.piHolePolicy.matchLabels }}
+    {{- toYaml . | nindent 6 }}
+    {{- end }}
+  policyTypes:
+    - Ingress
+{{- end }}
